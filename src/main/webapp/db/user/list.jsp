@@ -1,4 +1,5 @@
-<%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.List"%>
 <%@page import="com.sunset.common.MysqlService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -11,12 +12,15 @@
 <body>
 <%
 
-	MysqlService mysqlService = new MysqlService();
+	MysqlService mysqlService = MysqlService.getInstance();
 
 	mysqlService.connect();
-	ResultSet resultSet = mysqlService.select("SELECT * FROM `new_user`");
+	List<Map<String, Object>> userList = mysqlService.select("SELECT * FROM `new_user`");
+	
+	mysqlService.disconnect();
 	
 %>
+	<%=userList %>
 	
 	<table border="1">
 		<thead>
@@ -27,11 +31,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			<% while(resultSet.next()) { %>
+			<% for(Map<String, Object> user:userList) { %>
 				<tr>
-					<td><%= resultSet.getString("name") %></td>
-					<td><%= resultSet.getString("email") %></td>
-					<td><%= resultSet.getString("introduce") %></td>
+					<td><%= user.get("name") %></td>
+					<td><%= user.get("email") %></td>
+					<td><%= user.get("introduce") %></td>
 				</tr>
 			<% } %>
 		</tbody>
